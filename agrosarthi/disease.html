@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroSarthi - Disease Detection</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Disease Detection Page Specific Styles */
+        .disease-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/hero-bg.svg');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            position: relative; /* Ensure z-index is effective */
+            z-index: 1; /* Keep hero background behind panel */
+        }
+
+        .input-panel {
+            background-color: var(--background-light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-top: -50px;
+            position: relative;
+            z-index: 20; /* Increased z-index to ensure it's on top */
+        }
+
+        .input-panel h2 {
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .upload-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .upload-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .upload-btn {
+            flex: 1;
+            padding: 15px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .upload-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .upload-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .camera-container {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .camera-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        #camera-feed {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        .camera-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .preview-container {
+            display: none;
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        .preview-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        #image-preview {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 15px;
+            border: 2px solid var(--primary-light);
+        }
+
+        .preview-controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .control-btn:hover {
+            background-color: var(--secondary-dark);
+            transform: translateY(-2px);
+        }
+
+        .control-btn.reset {
+            background-color: #f44336;
+        }
+
+        .control-btn.reset:hover {
+            background-color: #d32f2f;
+        }
+
+        .analyze-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 20px auto;
+            padding: 15px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .analyze-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .analyze-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .analyze-btn .spinner {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        .analyze-btn.loading {
+            color: transparent;
+        }
+
+        .analyze-btn.loading .spinner {
+            display: block;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .drag-area {
+            display: none;
+            border: 2px dashed var(--primary-light);
+            border-radius: var(--border-radius);
+            padding: 30px;
+            text-align: center;
+            margin: 20px auto;
+            max-width: 600px;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .drag-area.active {
+            display: block;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .drag-area.highlight {
+            border-color: var(--primary-color);
+            background-color: rgba(46, 125, 50, 0.05);
+        }
+
+        .drag-area i {
+            font-size: 3rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .drag-area h3 {
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+
+        .drag-area p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .browse-btn {
+            color: var(--primary-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: color var(--transition-speed) ease;
+        }
+
+        .browse-btn:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* Results Section */
+        .results-section {
+            padding: 60px 0;
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .results-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: var(--background-light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-header h2 {
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .result-header p {
+            color: #666;
+        }
+
+        .disease-card {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .disease-card.revealed {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .disease-image {
+            flex: 0 0 150px;
+            height: 150px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            background-color: #f5f5f5;
+        }
+
+        .disease-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .disease-details {
+            flex: 1;
+        }
+
+        .disease-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 5px;
+        }
+
+        .confidence {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-bottom: 15px;
+        }
+
+        .crop-type {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .disease-description {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .treatment-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-dark);
+        }
+
+        .treatment-steps {
+            padding-left: 20px;
+        }
+
+        .treatment-steps li {
+            margin-bottom: 8px;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .treatment-steps li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+
+        .manual-lookup {
+            margin-top: 40px;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .manual-lookup h3 {
+            margin-bottom: 15px;
+            color: var(--primary-dark);
+        }
+
+        .disease-select {
+            width: 100%;
+            max-width: 400px;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            margin: 0 auto;
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .upload-buttons {
+                flex-direction: column;
+            }
+
+            .disease-card {
+                flex-direction: column;
+            }
+
+            .disease-image {
+                width: 100%;
+                max-width: 250px;
+                margin: 0 auto 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+ <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Agro<span>Sarthi</span></a>
+            <div class="nav-links">
+                <ul>
+                   <li><a href="index.html"  data-lang-key="nav_home">Home</a></li>
+                    <li><a href="crop.html"  data-lang-key="nav_crop">Crop Recommendation</a></li>
+                    <li><a href="disease.html"  class="active" data-lang-key="nav_disease">Disease Detection</a></li>
+                    <li><a href="weather.html" data-lang-key="nav_weather">Weather</a></li>
+                    <li><a href="price.html" data-lang-key="nav_prices">Prices</a></li>
+                    <li><a href="yield.html" data-lang-key="nav_yield">Yield</a></li>
+                    <li><a href="chatbot.html" data-lang-key="nav_chatbot">Chatbot</a></li>
+                    <li><a href="schedule.html" data-lang-key="nav_schedule">Schedule</a></li>
+                </ul>
+            </div>
+            <div class="language-selector">
+                <div class="selected-lang">
+                    <span data-lang-key="current_language">English</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <ul class="lang-dropdown">
+                    <li data-lang="english">English</li>
+          <li data-lang="hindi">हिंदी</li>
+          <li data-lang="marathi">मराठी</li>
+                </ul>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+
+    <!-- Hero Section -->
+    <section class="hero disease-hero">
+        <div class="hero-content">
+            <h1 class="animate-on-load" data-lang-key="disease_hero_title">Detect Crop Diseases Instantly</h1>
+            <p class="animate-on-load" data-lang-key="disease_hero_description">Capture or upload a leaf image – AgroSarthi detects issues and suggests treatments.</p>
+        </div>
+    </section>
+
+    <!-- Input Panel Section -->
+   <section class="container">
+  <div class="input-panel">
+    <h2 data-lang-key="disease_upload_title">Upload or Take a Leaf Photo</h2>
+
+    <!-- Added crop name input -->
+    <div style="max-width: 500px; margin: 0 auto 25px;">
+      <label for="crop-name-input" style="display:block; margin-bottom: 8px; font-weight:600; color: var(--primary-dark);">Enter Crop Name:</label>
+      <input type="text" id="crop-name-input" placeholder="e.g., mango" style="width: 100%; padding: 10px 15px; font-size: 1rem; border-radius: var(--border-radius); border: 1px solid #ddd; font-family: 'Poppins', sans-serif;">
+    </div>
+<!-- Language selection -->
+<div style="max-width: 500px; margin: 0 auto 25px;">
+  <label for="language-select" style="display:block; margin-bottom: 8px; font-weight:600; color: var(--primary-dark);">
+    Select Language:
+  </label>
+  <select id="language-select" style="width: 100%; padding: 10px 15px; font-size: 1rem; border-radius: var(--border-radius); border: 1px solid #ddd; font-family: 'Poppins', sans-serif;">
+    <option value="English">English</option>
+    <option value="Hindi">Hindi</option>
+    <option value="Marathi">Marathi</option>
+  </select>
+</div>
+    <div class="upload-container">
+      <div class="upload-buttons">
+        <button class="upload-btn" id="camera-btn">
+          <i class="fas fa-camera"></i>
+          <span data-lang-key="disease_camera_btn">Use Camera</span>
+        </button>
+        <button class="upload-btn" id="upload-btn">
+          <i class="fas fa-upload"></i>
+          <span data-lang-key="disease_upload_btn">Upload Image</span>
+        </button>
+      </div>
+
+      <div class="camera-container" id="camera-container">
+        <video id="camera-feed" autoplay playsinline></video>
+        <div class="camera-controls">
+          <button class="control-btn" id="capture-btn" data-lang-key="disease_capture_btn">Capture Photo</button>
+          <button class="control-btn reset" id="camera-cancel-btn" data-lang-key="disease_cancel_btn">Cancel</button>
+        </div>
+      </div>
+
+      <div class="preview-container" id="preview-container">
+        <img id="image-preview" alt="Leaf preview">
+        <div class="preview-controls">
+          <button class="control-btn reset" id="reset-btn" data-lang-key="disease_reset_btn">Reset</button>
+        </div>
+      </div>
+
+      <div class="drag-area" id="drag-area">
+        <i class="fas fa-cloud-upload-alt"></i>
+        <h3 data-lang-key="disease_drag_title">Drag & Drop</h3>
+        <p data-lang-key="disease_drag_desc">Drop your image here or</p>
+        <span class="browse-btn" data-lang-key="disease_browse_btn">browse files</span>
+        <input type="file" class="file-input" id="file-input" accept=".jpg, .jpeg, .png">
+      </div>
+
+      <button class="analyze-btn" id="analyze-btn" disabled>
+        <span data-lang-key="disease_analyze_btn">Analyze Disease</span>
+        <div class="spinner"></div>
+      </button>
+    </div>
+  </div>
+</section>
+
+    <!-- Results Section -->
+    <section class="results-section" id="results-section">
+        <div class="container">
+            <div class="results-container">
+                <div class="result-header">
+                    <h2 data-lang-key="disease_results_title">Disease Detection Results</h2>
+                    <p data-lang-key="disease_results_desc">Here's what we found in your leaf image</p>
+                </div>
+                
+                <div id="disease-results">
+                    <!-- Disease results will be dynamically generated with JavaScript -->
+                </div>
+                
+                <div class="manual-lookup">
+                    <h3 data-lang-key="disease_manual_title">Or select a disease manually</h3>
+                    <select class="disease-select" id="disease-select">
+                        <option value="" selected disabled data-lang-key="disease_select_default">Select a disease</option>
+                        <!-- Options will be dynamically generated with JavaScript -->
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-links">
+                    <h3>Pages</h3>
+                    <ul>
+                        <li><a href="index.html" class="footer-logo"><i class="fas fa-leaf logo-icon"></i> Agro<span>Sarthi</span></a></li>
+                        <li><a href="index.html"  data-lang-key="nav_home">Home</a></li>
+                    <li><a href="crop.html" data-lang-key="nav_crop">Crop Recommendation</a></li>
+                    <li><a href="disease.html" data-lang-key="nav_disease">Disease Detection</a></li>
+                    <li><a href="weather.html" data-lang-key="nav_weather">Weather</a></li>
+                    <li><a href="price.html" data-lang-key="nav_prices">Prices</a></li>
+                    <li><a href="yield.html" data-lang-key="nav_yield">Yield</a></li>
+                    <li><a href="chatbot.html"class="active" data-lang-key="nav_chatbot">Chatbot</a></li>
+                    <li><a href="schedule.html" data-lang-key="nav_schedule">Schedule</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom" style="background-color: #f8f9fa; padding: 15px; text-align: center; font-family: sans-serif; font-size: 14px; margin-top: 10px; border-radius: 5px;">
+                <p style="margin: 5px 0;"><strong>Team Name:</strong>ALGOCRAFT</p>
+                <p style="margin: 5px 0;"><strong>Team Members:</strong> Piyush Bhavsar, Tanishqa Jagtap, Arjan Pathan</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="disease.js"></script>
+</body>
+</html>

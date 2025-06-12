@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="price_page_title">AgroSarthi - Price Estimation</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+     <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf logo-icon"></i> <i class="fas fa-seedling logo-icon-secondary"></i> Agro<span>Sarthi</span>
+            </a>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="index.html" data-lang-key="nav_home">Home</a></li>
+                    <li><a href="crop.html" data-lang-key="nav_crop">Crop Recommendation</a></li>
+                    <li><a href="disease.html" data-lang-key="nav_disease">Disease Detection</a></li>
+                    <li><a href="weather.html" data-lang-key="nav_weather">Weather</a></li>
+                    <li><a href="price.html"class="active"  data-lang-key="nav_prices">Prices</a></li>
+                    <li><a href="yield.html" data-lang-key="nav_yield">Yield</a></li>
+                    <li><a href="chatbot.html" data-lang-key="nav_chatbot">Chatbot</a></li>
+                    <li><a href="schedule.html" data-lang-key="nav_schedule">Schedule</a></li>
+                </ul>
+            </div>
+            <div class="language-selector">
+                <div class="selected-lang">
+                    <span data-lang-key="current_language">English</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <ul class="lang-dropdown">
+                     <li data-lang="english">English</li>
+          <li data-lang="hindi">हिंदी</li>
+          <li data-lang="marathi">मराठी</li>
+                </ul>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section price-hero">
+        <div class="hero-content animate-on-load">
+            <h1 data-lang-key="price_hero_title">
+                <i class="fas fa-chart-line"></i> Estimate Crop Market Prices
+            </h1>
+            <p class="subtitle" data-lang-key="price_hero_subtitle">
+                Get price trends and estimates based on your region, crop type, and market data
+            </p>
+            <div class="hero-icons">
+                <i class="fas fa-rupee-sign"></i>
+                <i class="fas fa-chart-bar"></i>
+                <i class="fas fa-basket-shopping"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section class="price-estimation-panel animate-on-load">
+            <h2 data-lang-key="price_form_title">Enter Crop Details</h2>
+            
+            <form id="price-estimation-form" class="estimation-form">
+                <div class="form-grid">
+                    <!-- District Selection -->
+                    <div class="form-group">
+                        <label for="district" data-lang-key="price_district">Select District</label>
+                        <div class="select-wrapper">
+                            <select id="district" name="district" required>
+                                <option value="" data-lang-key="price_select_district">Choose a district</option>
+                                <!-- Districts will be populated dynamically -->
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- Month Selection -->
+                    <div class="form-group">
+                        <label for="month" data-lang-key="price_month">Select Month</label>
+                        <div class="select-wrapper">
+                            <select id="month" name="month" required>
+                                <option value="" data-lang-key="price_select_month">Choose a month</option>
+                                <!-- Months will be populated dynamically -->
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- Market Selection -->
+                    <div class="form-group">
+                        <label for="market" data-lang-key="price_market">Select Market</label>
+                        <div class="select-wrapper">
+                            <select id="market" name="market" required disabled>
+                                <option value="" data-lang-key="price_select_market">Choose a market</option>
+                                <!-- Markets will be populated based on district -->
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- Commodity Selection -->
+                    <div class="form-group">
+                        <label for="commodity" data-lang-key="price_commodity">Select Commodity</label>
+                        <div class="select-wrapper">
+                            <select id="commodity" name="commodity" required>
+                                <option value="" data-lang-key="price_select_commodity">Choose a crop</option>
+                                <!-- Commodities will be populated dynamically -->
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- Variety Selection -->
+                    <div class="form-group">
+                        <label for="variety" data-lang-key="price_variety">Select Variety (Optional)</label>
+                        <div class="select-wrapper">
+                            <select id="variety" name="variety">
+                                <option value="FAQ" data-lang-key="price_faq">FAQ (Fair Average Quality)</option>
+                                <!-- Varieties will be populated based on commodity -->
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- Agricultural Season -->
+                    <div class="form-group">
+                        <label for="agri-season" data-lang-key="price_agri_season">Agricultural Season</label>
+                        <div class="select-wrapper">
+                            <select id="agri-season" name="agri-season" required>
+                                <option value="" data-lang-key="price_select_season">Choose a season</option>
+                                <option value="kharif">Kharif</option>
+                                <option value="rabi">Rabi</option>
+                                <option value="zaid">Zaid</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <!-- Climate Season -->
+                    <div class="form-group">
+                        <label for="climate-season" data-lang-key="price_climate_season">Climate Season</label>
+                        <div class="select-wrapper">
+                            <select id="climate-season" name="climate-season" required>
+                                <option value="" data-lang-key="price_select_climate">Choose a climate season</option>
+                                <option value="summer">Summer</option>
+                                <option value="monsoon">Monsoon</option>
+                                <option value="winter">Winter</option>
+                            </select>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary estimate-btn">
+                        <i class="fas fa-calculator"></i>
+                        <span data-lang-key="price_estimate_btn">Estimate Price</span>
+                    </button>
+                    <button type="reset" class="btn btn-secondary">
+                        <i class="fas fa-redo"></i>
+                        <span data-lang-key="price_reset_btn">Reset Form</span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Results Section -->
+        <section id="price-results" class="price-results" style="display: none;">
+            <div class="results-card animate-on-load">
+                <h3 data-lang-key="price_results_title">Estimated Price Range</h3>
+                <div class="price-range">
+                    <span class="currency">₹</span>
+                    <span id="price-min">0</span>
+                    <span class="separator">–</span>
+                    <span class="currency">₹</span>
+                    <span id="price-max">0</span>
+                    <span class="unit">/quintal</span>
+                </div>
+                
+                <div class="price-trends">
+                    <h4 data-lang-key="price_trends_title">Price Trends</h4>
+                    <div id="price-chart" class="price-chart">
+                        <!-- Chart will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="market-insights">
+                    <h4 data-lang-key="price_insights_title">Market Insights</h4>
+                    <p id="market-insight-text" data-lang-key="price_insights_loading">Analyzing market trends...</p>
+                </div>
+
+                <!-- Yield Prediction Call-to-Action -->
+                <div class="yield-cta">
+                    <h4 data-lang-key="yield_cta_title">Estimate Your Yield</h4>
+                    <p data-lang-key="yield_cta_text">Want to calculate your potential harvest yield? Use our yield prediction tool to get accurate estimates.</p>
+                    <a href="yield.html" class="btn btn-secondary">
+                        <i class="fas fa-tractor"></i>
+                        <span data-lang-key="yield_cta_btn">Predict Yield</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Error Message -->
+        <div id="error-message" class="error-message" style="display: none;">
+            <i class="fas fa-exclamation-circle"></i>
+            <p data-lang-key="price_error_message">No data found for the selected parameters. Try a different combination.</p>
+        </div>
+    </main>
+  <!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-links">
+                <h3 data-lang-key="footer_pages_title">Pages</h3>
+                <ul>
+                    <li>
+                        <a href="index.html" class="footer-logo">
+                            <i class="fas fa-leaf logo-icon"></i>
+                            <i class="fas fa-seedling logo-icon-secondary"></i> Agro<span>Sarthi</span>
+                        </a>
+                    </li>
+                    <li><a href="index.html" data-lang-key="nav_home">Home</a></li>
+                    <li><a href="crop.html" data-lang-key="nav_crop">Crop Recommendation</a></li>
+                    <li><a href="disease.html" data-lang-key="nav_disease">Disease Detection</a></li>
+                    <li><a href="weather.html" data-lang-key="nav_weather">Weather</a></li>
+                    <li><a href="price.html" data-lang-key="nav_prices">Prices</a></li>
+                    <li><a href="yield.html" data-lang-key="nav_yield">Yield</a></li>
+                    <li><a href="chatbot.html" data-lang-key="nav_chatbot">Chatbot</a></li>
+                    <li><a href="schedule.html" data-lang-key="nav_schedule">Schedule</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom" style="background-color: #f8f9fa; padding: 15px; text-align: center; font-family: sans-serif; font-size: 14px; margin-top: 10px; border-radius: 5px;">
+            <p style="margin: 5px 0;"><strong data-lang-key="team_name_label">Team Name:</strong>ALGOCRAFT</p>
+            <p style="margin: 5px 0;"><strong data-lang-key="team_members_label">Team Members:</strong> Piyush Bhavsar, Tanishqa Jagtap, Arjan Pathan</p>
+        </div>
+    </div>
+</footer>
+
+    <script src="script.js"></script>
+    <script src="price.js"></script>
+</body>
+</html> 

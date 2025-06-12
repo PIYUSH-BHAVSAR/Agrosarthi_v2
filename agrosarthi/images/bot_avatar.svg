@@ -1,0 +1,14 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Head -->
+  <circle cx="50" cy="50" r="40" fill="#4CAF50"/>
+  <!-- Eyes -->
+  <circle cx="35" cy="40" r="5" fill="white"/>
+  <circle cx="65" cy="40" r="5" fill="white"/>
+  <circle cx="35" cy="40" r="2" fill="black"/>
+  <circle cx="65" cy="40" r="2" fill="black"/>
+  <!-- Mouth -->
+  <path d="M 30 65 Q 50 75 70 65" stroke="white" stroke-width="3" fill="transparent"/>
+  <!-- Optional: Leaf/Antenna -->
+  <path d="M 50 10 Q 55 2 60 10 Q 50 15 50 10" fill="#8BC34A"/>
+  <path d="M 50 10 Q 45 2 40 10 Q 50 15 50 10" fill="#8BC34A"/>
+</svg>

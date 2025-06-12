@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title data-lang="yield_page_title">AgroSarthi - Yield Prediction</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* Your existing styles here */
+        /* Chart styles removed */
+        /* Only styles related to prediction results remain */
+        /* Keep these styles for yield-estimate card */
+        .yield-estimate {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #fff8f0 0%, #f8f9fa 100%);
+            border-radius: 12px;
+            border: 2px solid #fd7e14;
+            position: relative;
+        }
+        .yield-estimate::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #fd7e14, #ffc107, #28a745, #007bff);
+            border-radius: 12px;
+            z-index: -1;
+            opacity: 0.7;
+        }
+        .total-yield {
+            margin-bottom: 15px;
+        }
+        .yield-value {
+            font-size: 3.5em;
+            font-weight: 700;
+            color: #fd7e14;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        .yield-unit {
+            font-size: 1.2em;
+            color: #6c757d;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+        .yield-tons {
+            display: block;
+            font-size: 1.1em;
+            color: #28a745;
+            margin-top: 5px;
+            font-weight: 600;
+        }
+        .yield-per-hectare {
+            font-size: 1.1em;
+            color: #495057;
+            padding: 10px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+        }
+        .yield-per-hectare .unit {
+            color: #6c757d;
+            font-weight: 500;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .yield-value {
+                font-size: 2.5em;
+            }
+            .insight-item span {
+                font-size: 13px;
+            }
+        }
+    </style>
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet"
+    />
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf logo-icon"></i> <i class="fas fa-seedling logo-icon-secondary"></i> Agro<span>Sarthi</span>
+            </a>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="index.html"  data-lang-key="nav_home">Home</a></li>
+                    <li><a href="crop.html" data-lang-key="nav_crop">Crop Recommendation</a></li>
+                    <li><a href="disease.html" data-lang-key="nav_disease">Disease Detection</a></li>
+                    <li><a href="weather.html" data-lang-key="nav_weather">Weather</a></li>
+                    <li><a href="price.html"  data-lang-key="nav_prices">Prices</a></li>
+                    <li><a href="yield.html"class="active"  data-lang-key="nav_yield">Yield</a></li>
+                    <li><a href="chatbot.html" data-lang-key="nav_chatbot">Chatbot</a></li>
+                    <li><a href="schedule.html"  data-lang-key="nav_schedule">Schedule</a></li>
+                </ul>
+            </div>
+            <div class="language-selector">
+                <div class="selected-lang">
+                    <span data-lang-key="current_language">English</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <ul class="lang-dropdown">
+                    <li data-lang="english">English</li>
+          <li data-lang="hindi">हिंदी</li>
+          <li data-lang="marathi">मराठी</li>
+                </ul>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+   <!-- Hero Section -->
+<section class="hero-section yield-hero">
+    <div class="hero-content animate-on-load">
+        <h1 data-lang-key="yield_hero_title">
+            <i class="fas fa-chart-bar"></i> Calculate Your Expected Yield
+        </h1>
+        <p class="subtitle" data-lang-key="yield_hero_subtitle">
+            Get an estimate of your farm's output using area, region, and crop type
+        </p>
+        <div class="hero-icons">
+            <i class="fas fa-tractor"></i>
+            <i class="fas fa-wheat-awn"></i>
+            <i class="fas fa-calculator"></i>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<main class="container">
+    <section class="yield-prediction-panel animate-on-load">
+        <h2 data-lang-key="yield_form_title">Enter Farm & Crop Details</h2>
+
+        <form id="yield-prediction-form" class="prediction-form">
+            <div class="form-grid">
+
+                <!-- State Selection -->
+                <div class="form-group">
+                    <label for="state" data-lang-key="yield_state">Select State</label>
+                    <div class="select-wrapper">
+                        <select id="state" name="state" required>
+                            <option value="" data-lang-key="yield_select_state">Choose a state</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <!-- District Selection -->
+                <div class="form-group">
+                    <label for="district" data-lang-key="yield_district">Select District</label>
+                    <div class="select-wrapper">
+                        <select id="district" name="district" required disabled>
+                            <option value="" data-lang-key="yield_select_district">Choose a district</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <!-- Commodity Selection -->
+                <div class="form-group">
+                    <label for="commodity" data-lang-key="yield_commodity">Select Crop</label>
+                    <div class="select-wrapper">
+                        <select id="commodity" name="commodity" required>
+                            <option value="" data-lang-key="yield_select_commodity">Choose a crop</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <!-- Season Selection -->
+                <div class="form-group">
+                    <label for="season" data-lang-key="yield_season">Select Season</label>
+                    <div class="select-wrapper">
+                        <select id="season" name="season" required>
+                            <option value="" data-lang-key="yield_select_season">Choose a season</option>
+                            <option value="Kharif">Kharif</option>
+                            <option value="Rabi">Rabi</option>
+                            <option value="Zaid">Zaid</option>
+                            <option value="Whole Year">Whole Year</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+
+                <!-- Area Input -->
+                <div class="form-group">
+                    <label for="area" data-lang-key="yield_area">Area in Hectares</label>
+                    <div class="input-wrapper">
+                        <input
+                            type="number"
+                            id="area"
+                            name="area"
+                            step="0.01"
+                            min="0.01"
+                            required
+                            placeholder="e.g., 2.5"
+                        />
+                        <span class="unit">ha</span>
+                    </div>
+                </div>
+
+                <!-- Soil Type (Optional) -->
+                <div class="form-group">
+                    <label for="soil-type" data-lang-key="yield_soil_type">Soil Type (Optional)</label>
+                    <div class="select-wrapper">
+                        <select id="soil-type" name="soil-type">
+                            <option value="" data-lang-key="yield_select_soil">Select soil type</option>
+                            <option value="alluvial">Alluvial</option>
+                            <option value="black">Black</option>
+                            <option value="red">Red</option>
+                            <option value="laterite">Laterite</option>
+                            <option value="desert">Desert</option>
+                        </select>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary predict-btn">
+                    <i class="fas fa-calculator"></i>
+                    <span data-lang-key="yield_predict_btn">Predict Yield</span>
+                </button>
+                <button type="reset" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i>
+                    <span data-lang-key="yield_reset_btn">Reset Form</span>
+                </button>
+            </div>
+        </form>
+    </section>
+
+    <!-- Results Section -->
+    <section id="yield-results" class="yield-results" style="display: none;">
+        <div class="results-card animate-on-load">
+            <h3 data-lang-key="yield_results_title">Predicted Yield</h3>
+            <div class="yield-estimate">
+                <div class="total-yield">
+                    <span class="yield-value" id="total-yield">0</span>
+                    <span class="yield-unit">kg</span>
+                    <span class="yield-tons" id="yield-tons">(0 tons)</span>
+                </div>
+                <div class="yield-per-hectare">
+                    <span data-lang-key="yield_per_hectare">Yield per Hectare:</span>
+                    <span id="per-hectare-yield">0</span>
+                    <span class="unit">kg/ha</span>
+                </div>
+            </div>
+
+            <div class="schedule-link">
+                <a href="#" class="btn btn-secondary">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-lang-key="yield_schedule_link">Get Detailed Crop Schedule</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Error Message -->
+    <div id="error-message" class="error-message" style="display: none;">
+        <i class="fas fa-exclamation-circle"></i>
+        <p data-lang-key="yield_error_message">
+            Unable to predict yield for the selected parameters. Please try different values.
+        </p>
+    </div>
+</main>
+
+   <!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-links">
+                <h3 data-lang-key="footer_pages_title">Pages</h3>
+                <ul>
+                    <li>
+                        <a href="index.html" class="footer-logo">
+                            <i class="fas fa-leaf logo-icon"></i>
+                            <i class="fas fa-seedling logo-icon-secondary"></i> Agro<span>Sarthi</span>
+                        </a>
+                    </li>
+                    <li><a href="index.html" data-lang-key="nav_home">Home</a></li>
+                    <li><a href="crop.html" data-lang-key="nav_crop">Crop Recommendation</a></li>
+                    <li><a href="disease.html" data-lang-key="nav_disease">Disease Detection</a></li>
+                    <li><a href="weather.html" data-lang-key="nav_weather">Weather</a></li>
+                    <li><a href="price.html" data-lang-key="nav_prices">Prices</a></li>
+                    <li><a href="yield.html" data-lang-key="nav_yield">Yield</a></li>
+                    <li><a href="chatbot.html" data-lang-key="nav_chatbot">Chatbot</a></li>
+                    <li><a href="schedule.html" data-lang-key="nav_schedule">Schedule</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom" style="background-color: #f8f9fa; padding: 15px; text-align: center; font-family: sans-serif; font-size: 14px; margin-top: 10px; border-radius: 5px;">
+            <p style="margin: 5px 0;"><strong data-lang-key="team_name_label">Team Name:</strong>ALGOCRAFT</p>
+            <p style="margin: 5px 0;"><strong data-lang-key="team_members_label">Team Members:</strong> Piyush Bhavsar, Tanishqa Jagtap, Arjan Pathan</p>
+        </div>
+    </div>
+</footer>
+
+    <script src="script.js"></script>
+    <script src="yield.js"></script>
+
+    <!--
+    JS in yield.js should:
+    - Handle form submit
+    - Call http://127.0.0.1:8000/predict-yield/ with form inputs as JSON POST
+    - Display prediction results in #total-yield, #yield-tons, #per-hectare-yield
+    - Show #yield-results section on success, hide #error-message
+    - Show #error-message on failure
+    - Save form state (e.g., in localStorage) and restore on page load
+    -->
+</body>
+</html>

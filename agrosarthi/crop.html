@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroSarthi - Crop Recommendation</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Crop Recommendation Page Specific Styles */
+        .crop-hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('images/hero-bg.svg');
+            background-size: cover;
+            background-position: center;
+            height: 60vh;
+            position: relative; /* Ensure z-index is effective */
+            z-index: 1; /* Keep hero background behind panel */
+        }
+
+        .input-panel {
+            background-color: var(--background-light);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-top: -50px;
+            position: relative;
+            z-index: 20; /* Increased z-index to ensure it's on top */
+        }
+
+        .input-panel h2 {
+            color: var(--primary-dark);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .input-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .toggle-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #777;
+            cursor: pointer;
+            position: relative;
+            transition: color var(--transition-speed) ease;
+        }
+
+        .toggle-btn.active {
+            color: var(--primary-color);
+        }
+
+        .toggle-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+        }
+
+        .input-form {
+            display: none;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .input-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+            transition: border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.1);
+            outline: none;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .recommend-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 40px auto 20px;
+            padding: 15px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recommend-btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .recommend-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .recommend-btn .spinner {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+        }
+
+        .recommend-btn.loading .spinner {
+            display: block;
+        }
+
+        .recommend-btn.loading span {
+            visibility: hidden;
+        }
+
+        @keyframes spin {
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .results-section {
+            padding-top: 40px;
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .crop-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .crop-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .crop-card.revealed {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .crop-card:nth-child(1) { transition-delay: 0.1s; }
+        .crop-card:nth-child(2) { transition-delay: 0.3s; }
+        .crop-card:nth-child(3) { transition-delay: 0.5s; }
+
+        .crop-image {
+            height: 180px;
+            background-color: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .crop-image i {
+            font-size: 4rem;
+            color: var(--primary-color);
+        }
+
+        .crop-details {
+            padding: 20px;
+        }
+
+        .crop-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .crop-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .crop-tag {
+            background-color: rgba(46, 125, 50, 0.1);
+            color: var(--primary-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .crop-confidence {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .confidence-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-right: 10px;
+        }
+
+        .confidence-bar {
+            flex-grow: 1;
+            height: 6px;
+            background-color: #eee;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .confidence-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+            width: 0;
+            transition: width 1s ease;
+        }
+
+        .confidence-value {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-left: 10px;
+        }
+
+        .crop-action {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background-color: var(--secondary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .crop-action:hover {
+            background-color: var(--secondary-dark);
+        }
+
+        .loading-placeholder {
+            text-align: center;
+            padding: 40px 0;
+            display: none;
+        }
+
+        .loading-placeholder.active {
+            display: block;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(46, 125, 50, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            margin: 0 auto 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .crop-hero {
+                height: 50vh;
+            }
+
+            .input-panel {
+                margin-top: -30px;
+                padding: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">Agro<span>Sarthi</span></a>
+            <div class="nav-links">
+                <ul>
+                   <li><a href="index.html"  data-lang-key="nav_home">Home</a></li>
+                    <li><a href="crop.html"  class="active" data-lang-key="nav_crop">Crop Recommendation</a></li>
+                    <li><a href="disease.html" data-lang-key="nav_disease">Disease Detection</a></li>
+                    <li><a href="weather.html" data-lang-key="nav_weather">Weather</a></li>
+                    <li><a href="price.html" data-lang-key="nav_prices">Prices</a></li>
+                    <li><a href="yield.html" data-lang-key="nav_yield">Yield</a></li>
+                    <li><a href="chatbot.html" data-lang-key="nav_chatbot">Chatbot</a></li>
+                    <li><a href="schedule.html" data-lang-key="nav_schedule">Schedule</a></li>
+                </ul>
+            </div>
+            <div class="language-selector">
+                <div class="selected-lang">
+                    <span data-lang-key="current_language">English</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <ul class="lang-dropdown">
+                    <li data-lang="english">English</li>
+                    <li data-lang="hindi">हिंदी</li>
+                    <li data-lang="marathi">मराठी</li>
+                </ul>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero crop-hero">
+        <div class="hero-content">
+            <h1 class="animate-on-load" data-lang-key="crop_hero_title">Get the Best Crops for Your Land</h1>
+            <p class="animate-on-load" data-lang-key="crop_hero_description">Based on your region's soil, rainfall, and weather data, AgroSarthi recommends crops with the highest chance of success.</p>
+        </div>
+    </section>
+
+    <!-- Input Panel Section -->
+    <section class="input-section">
+        <div class="container">
+            <div class="input-panel">
+                <h2 data-lang-key="input_title">Enter Your Farm Details</h2>
+                
+                <div class="input-toggle">
+                    <button class="toggle-btn active" data-form="location-form" data-lang-key="use_location">Use My Location (Auto-fill)</button>
+                    <button class="toggle-btn" data-form="manual-form" data-lang-key="enter_manually">Enter Manually</button>
+                </div>
+                
+                <!-- Location Form -->
+                <div class="input-form location-form active">
+                    <div class="form-group">
+                        <button id="get-location" class="form-control">
+                            <i class="fas fa-location-arrow"></i> 
+                            <span data-lang-key="detect_location">Detect My Location</span>
+                        </button>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-lang-key="nitrogen">Nitrogen (N) Value</label>
+                            <input type="text" class="form-control" id="auto-nitrogen" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label data-lang-key="phosphorus">Phosphorus (P) Value</label>
+                            <input type="text" class="form-control" id="auto-phosphorus" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-lang-key="potassium">Potassium (K) Value</label>
+                            <input type="text" class="form-control" id="auto-potassium" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label data-lang-key="language">Language</label>
+                            <select class="form-control" id="auto-language">
+                                <option value="english">English</option>
+                                <option value="hindi">हिंदी</option>
+                                <option value="marathi">मराठी</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-lang-key="rainfall">Rainfall (mm)</label>
+                            <input type="text" class="form-control" id="auto-rainfall" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label data-lang-key="temperature">Temperature (°C)</label>
+                            <input type="text" class="form-control" id="auto-temperature" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-lang-key="humidity">Humidity (%)</label>
+                            <input type="text" class="form-control" id="auto-humidity" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label data-lang-key="ph_level">pH Value</label>
+                            <input type="text" class="form-control" id="auto-ph" readonly>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Manual Form -->
+                <div class="input-form manual-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-lang-key="nitrogen">Nitrogen (N) Value</label>
+                            <input type="number" class="form-control" id="manual-nitrogen" placeholder="e.g. 40">
+                        </div>
+                        <div class="form-group">
+                            <label data-lang-key="phosphorus">Phosphorus (P) Value</label>
+                            <input type="number" class="form-control" id="manual-phosphorus" placeholder="e.g. 30">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-lang-key="potassium">Potassium (K) Value</label>
+                            <input type="number" class="form-control" id="manual-potassium" placeholder="e.g. 35">
+                        </div>
+                        <div class="form-group">
+                            <label data-lang-key="language">Language</label>
+                            <select class="form-control" id="manual-language">
+                                <option value="english">English</option>
+                                <option value="hindi">हिंदी</option>
+                                <option value="marathi">मराठी</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-lang-key="rainfall">Rainfall (mm)</label>
+                            <input type="number" class="form-control" id="manual-rainfall" placeholder="e.g. 1200">
+                        </div>
+                        <div class="form-group">
+                            <label data-lang-key="temperature">Temperature (°C)</label>
+                            <input type="number" class="form-control" id="manual-temperature" placeholder="e.g. 25">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label data-lang-key="humidity">Humidity (%)</label>
+                            <input type="number" class="form-control" id="manual-humidity" placeholder="e.g. 65">
+                        </div>
+                        <div class="form-group">
+                            <label data-lang-key="ph_level">pH Value</label>
+                            <input type="number" step="0.1" class="form-control" id="manual-ph" placeholder="e.g. 6.5">
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="recommend-btn" id="recommend-btn">
+                    <span data-lang-key="recommend_crops">Recommend Crops</span>
+                    <div class="spinner"></div>
+                </button>
+            </div>
+            
+            <!-- Loading Placeholder -->
+            <div class="loading-placeholder">
+                <div class="loading-spinner"></div>
+                <p data-lang-key="analyzing_data">Analyzing your farm data...</p>
+            </div>
+            
+            <!-- Results Section -->
+            <div class="results-section">
+                <h2 class="section-title" data-lang-key="recommended_crops">Recommended Crops for Your Farm</h2>
+                <div class="crop-cards">
+                    <!-- Crop cards will be dynamically generated with JavaScript -->
+                </div>
+                
+                <!-- Add View Crop Plan button -->
+                <button id="view-crop-plan" class="recommend-btn" style="margin-top: 30px; background-color: var(--accent-color);">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span data-lang-key="view_crop_plan">View Crop Plan</span>
+                    <div class="spinner"></div>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+   <!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-links">
+                <h3 data-lang-key="footer_pages_title">Pages</h3>
+                <ul>
+                    <li>
+                        <a href="index.html" class="footer-logo">
+                            <i class="fas fa-leaf logo-icon"></i>
+                            <i class="fas fa-seedling logo-icon-secondary"></i> Agro<span>Sarthi</span>
+                        </a>
+                    </li>
+                    <li><a href="index.html" data-lang-key="nav_home">Home</a></li>
+                    <li><a href="crop.html" data-lang-key="nav_crop">Crop Recommendation</a></li>
+                    <li><a href="disease.html" data-lang-key="nav_disease">Disease Detection</a></li>
+                    <li><a href="weather.html" data-lang-key="nav_weather">Weather</a></li>
+                    <li><a href="price.html" data-lang-key="nav_prices">Prices</a></li>
+                    <li><a href="yield.html" data-lang-key="nav_yield">Yield</a></li>
+                    <li><a href="chatbot.html" data-lang-key="nav_chatbot">Chatbot</a></li>
+                    <li><a href="schedule.html" data-lang-key="nav_schedule">Schedule</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom" style="background-color: #f8f9fa; padding: 15px; text-align: center; font-family: sans-serif; font-size: 14px; margin-top: 10px; border-radius: 5px;">
+            <p style="margin: 5px 0;"><strong data-lang-key="team_name_label">Team Name:</strong>ALGOCRAFT</p>
+            <p style="margin: 5px 0;"><strong data-lang-key="team_members_label">Team Members:</strong> Piyush Bhavsar, Tanishqa Jagtap, Arjan Pathan</p>
+        </div>
+    </div>
+</footer>
+
+    <script src="script.js"></script>
+    <script src="crop.js"></script>
+</body>
+</html>

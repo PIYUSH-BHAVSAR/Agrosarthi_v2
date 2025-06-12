@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- Leaf background -->
+  <rect width="512" height="512" fill="#f5f5f5" rx="15" ry="15"/>
+  
+  <!-- Leaf shape -->
+  <path d="M256,96 C180,96 120,156 120,232 C120,308 180,368 256,368 C332,368 392,308 392,232 C392,156 332,96 256,96 Z M256,336 C198,336 152,290 152,232 C152,174 198,128 256,128 C314,128 360,174 360,232 C360,290 314,336 256,336 Z" fill="#4CAF50" opacity="0.2"/>
+  
+  <!-- Leaf veins -->
+  <path d="M256,128 L256,336" stroke="#4CAF50" stroke-width="4" stroke-linecap="round" opacity="0.6"/>
+  <path d="M200,150 L312,314" stroke="#4CAF50" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+  <path d="M312,150 L200,314" stroke="#4CAF50" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+  <path d="M180,232 L332,232" stroke="#4CAF50" stroke-width="3" stroke-linecap="round" opacity="0.5"/>
+  
+  <!-- Leaf stem -->
+  <path d="M256,368 L256,416" stroke="#8BC34A" stroke-width="8" stroke-linecap="round"/>
+  
+  <!-- Camera icon overlay -->
+  <circle cx="256" cy="232" r="60" fill="#ffffff" opacity="0.9"/>
+  <path d="M226,212 L226,202 C226,199.8 227.8,198 230,198 L282,198 C284.2,198 286,199.8 286,202 L286,212 M286,212 L296,212 C298.2,212 300,213.8 300,216 L300,256 C300,258.2 298.2,260 296,260 L216,260 C213.8,260 212,258.2 212,256 L212,216 C212,213.8 213.8,212 216,212 L226,212" fill="none" stroke="#757575" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="256" cy="236" r="24" fill="none" stroke="#757575" stroke-width="4"/>
+</svg>

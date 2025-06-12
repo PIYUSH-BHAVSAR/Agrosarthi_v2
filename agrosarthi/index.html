@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgroSarthi - Smart Agriculture Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-leaf logo-icon"></i> <i class="fas fa-seedling logo-icon-secondary"></i> Agro<span>Sarthi</span>
+            </a>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="index.html" class="active" data-lang-key="nav_home">Home</a></li>
+                    <li><a href="crop.html" data-lang-key="nav_crop">Crop Recommendation</a></li>
+                    <li><a href="disease.html" data-lang-key="nav_disease">Disease Detection</a></li>
+                    <li><a href="weather.html" data-lang-key="nav_weather">Weather</a></li>
+                    <li><a href="price.html" data-lang-key="nav_prices">Prices</a></li>
+                    <li><a href="yield.html" data-lang-key="nav_yield">Yield</a></li>
+                    <li><a href="chatbot.html" data-lang-key="nav_chatbot">Chatbot</a></li>
+                    <li><a href="schedule.html" data-lang-key="nav_schedule">Schedule</a></li>
+                </ul>
+            </div>
+            <div class="language-selector">
+                <div class="selected-lang">
+                    <span data-lang-key="current_language">English</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <ul class="lang-dropdown">
+                     <li data-lang="english">English</li>
+          <li data-lang="hindi">हिंदी</li>
+          <li data-lang="marathi">मराठी</li>
+                </ul>
+            </div>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <video autoplay muted loop id="hero-video">
+            <source src="images/bg-video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div class="hero-content">
+            <h1 class="animate-on-load" data-lang-key="hero_title">Empowering Indian Farmers with Smart Agriculture Tools</h1>
+            <p class="animate-on-load" data-lang-key="hero_description">AgroSarthi is a smart farming assistant built for Indian farmers. It offers crop predictions, disease detection, yield estimation, and more — all customized for your location.</p>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title" data-lang-key="features_title">Our Smart Farming Features</h2>
+            <div class="features-grid">
+                <!-- Feature cards will be dynamically generated with JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-links">
+                <h3 data-lang-key="footer_pages_title">Pages</h3>
+                <ul>
+                    <li>
+                        <a href="index.html" class="footer-logo">
+                            <i class="fas fa-leaf logo-icon"></i>
+                            <i class="fas fa-seedling logo-icon-secondary"></i> Agro<span>Sarthi</span>
+                        </a>
+                    </li>
+                    <li><a href="index.html" data-lang-key="nav_home">Home</a></li>
+                    <li><a href="crop.html" data-lang-key="nav_crop">Crop Recommendation</a></li>
+                    <li><a href="disease.html" data-lang-key="nav_disease">Disease Detection</a></li>
+                    <li><a href="weather.html" data-lang-key="nav_weather">Weather</a></li>
+                    <li><a href="price.html" data-lang-key="nav_prices">Prices</a></li>
+                    <li><a href="yield.html" data-lang-key="nav_yield">Yield</a></li>
+                    <li><a href="chatbot.html" data-lang-key="nav_chatbot">Chatbot</a></li>
+                    <li><a href="schedule.html" data-lang-key="nav_schedule">Schedule</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom" style="background-color: #f8f9fa; padding: 15px; text-align: center; font-family: sans-serif; font-size: 14px; margin-top: 10px; border-radius: 5px;">
+            <p style="margin: 5px 0;"><strong data-lang-key="team_name_label">Team Name:</strong>ALGOCRAFT</p>
+            <p style="margin: 5px 0;"><strong data-lang-key="team_members_label">Team Members:</strong> Piyush Bhavsar, Tanishqa Jagtap, Arjan Pathan</p>
+        </div>
+    </div>
+</footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
